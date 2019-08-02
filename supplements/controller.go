@@ -1,4 +1,4 @@
-package meals
+package supplements
 
 import (
 	"encoding/json"
@@ -11,10 +11,10 @@ type Controller struct {
 	Repository Repository
 }
 
-func (c *Controller) GetMeal(w http.ResponseWriter, r *http.Request) {
-	meal := c.Repository.GetMeal(id)
+func (c *Controller) GetSupplement(w http.ResponseWriter, r *http.Request) {
+	supp := c.Repository.GetSupplement(id)
 
-	data, _ := json.Marshal(meal)
+	data, _ := json.Marshal(supp)
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -24,34 +24,34 @@ func (c *Controller) GetMeal(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (c *Controller) AddMeal(w http.ResponseWriter, r *http.Request) {
-	var meal Meal
+func (c *Controller) AddSupplement(w http.ResponseWriter, r *http.Request) {
+	var supp Supplement
 	body, err := ioutil.ReadAll(r.Body)
 
 	log.Println(body)
 
 	if err != nil {
-		log.Fatalln("Error AddMeal", err)
+		log.Fatalln("Error AddSupplement", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if err := r.Body.Close(); err != nil {
-		log.Fatalln("Error AddMeal", err)
+		log.Fatalln("Error AddSupplement", err)
 	}
 
-	if err := json.Unmarshal(body, &meal); err != nil {
+	if err := json.Unmarshal(body, &supp); err != nil {
 		w.WriteHeader(422)
 		log.Println(err)
 		if err := json.NewEncoder(w).Encode(err); err != nil {
-			log.Fatalln("Error AddMeal unmarshalling data", err)
+			log.Fatalln("Error AddSupplement unmarshalling data", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
 
-	log.Println(meal)
-	success := c.Repository.AddMeal(meal)
+	log.Println(supp)
+	success := c.Repository.AddSupplement(supp)
 	if !success {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
